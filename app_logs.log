@@ -1,0 +1,21 @@
+2024-12-13 03:37:43,640 - INFO - Modelo cargado exitosamente.
+2024-12-13 03:37:56,424 - INFO - Cliente conectado
+2024-12-13 03:38:11,480 - ERROR - Error procesando el mensaje: (<CloseCode.ABNORMAL_CLOSURE: 1006>, '')
+Traceback (most recent call last):
+  File "D:\Projects\sign-recognition\backend\main.py", line 83, in websocket_endpoint
+    message = await websocket.receive_text()
+  File "D:\Projects\sign-recognition\backend\.env\lib\site-packages\starlette\websockets.py", line 119, in receive_text
+    self._raise_on_disconnect(message)
+  File "D:\Projects\sign-recognition\backend\.env\lib\site-packages\starlette\websockets.py", line 113, in _raise_on_disconnect
+    raise WebSocketDisconnect(message["code"], message.get("reason"))
+starlette.websockets.WebSocketDisconnect: (<CloseCode.ABNORMAL_CLOSURE: 1006>, '')
+2024-12-13 03:38:11,501 - INFO - Cliente conectado
+2024-12-13 03:38:12,538 - ERROR - Error procesando el mensaje: (1012, None)
+Traceback (most recent call last):
+  File "D:\Projects\sign-recognition\backend\main.py", line 83, in websocket_endpoint
+    continue
+  File "D:\Projects\sign-recognition\backend\.env\lib\site-packages\starlette\websockets.py", line 119, in receive_text
+    self._raise_on_disconnect(message)
+  File "D:\Projects\sign-recognition\backend\.env\lib\site-packages\starlette\websockets.py", line 113, in _raise_on_disconnect
+    raise WebSocketDisconnect(message["code"], message.get("reason"))
+starlette.websockets.WebSocketDisconnect: (1012, None)

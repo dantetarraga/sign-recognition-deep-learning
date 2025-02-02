@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Language Detection</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 0; }
+    video { border: 1px solid #ddd; border-radius: 8px; width: 640px; }
+    canvas { display: none; }
+    .prediction { margin-top: 20px; font-size: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Sign Language Detection</h1>
+  <video id="video" autoplay muted></video>
+  <div class="prediction" id="prediction">Predicción: N/A</div>
+  <script>
+    const video = document.getElementById("video");
+    const predictionDiv = document.getElementById("prediction");
+
+    // Inicializar WebSocket
+    const websocket = new WebSocket("ws://127.0.0.1:8000/ws");
+
+    websocket.onopen = () => {
+      console.log("WebSocket conectado.");
+    };
+
+    websocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.error) {
+        console.error("Error:", data.error);
+      } else {
+        predictionDiv.textContent = `Predicción: ${data.class} (${(data.confidence * 100).toFixed(2)}%)`;
+      }
+    };
+
+    websocket.onerror = (error) => {
+      console.error("Error en WebSocket:", error);
+    };
+
+    websocket.onclose = () => {
+      console.log("WebSocket cerrado.");
+    };
+
+    // Capturar video de la cámara
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        video.srcObject = stream;
+        video.play();
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        setInterval(() => {
+          if (websocket.readyState === WebSocket.OPEN) {
+            canvas.width = 640;
+            canvas.height = 480;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const base64Frame = canvas.toDataURL("image/jpeg");
+            websocket.send(base64Frame); // Enviar frame al servidor
+          }
+        }, 200); // Enviar frames cada 200ms
+      })
+      .catch((err) => {
+        console.error("Error al acceder a la cámara:", err);
+      });
+  </script>
+</body>
+</html>
